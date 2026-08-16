@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: relay
+          POSTGRES_PASSWORD: relay
+          POSTGRES_DB: relay_test
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U relay -d relay_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    env:
+      RELAY_ENVIRONMENT: test
+      RELAY_SECRET_KEY: ci-insecure-secret-change-me-please-1234
+      RELAY_DATABASE_URL: postgresql://relay:relay@localhost:5432/relay_test
+      RELAY_TEST_DATABASE_URL: postgresql://relay:relay@localhost:5432/relay_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "0.8.23"
+
+      - name: Set up Python
+        run: uv venv --python 3.11 .venv
+
+      - name: Install
+        run: uv pip install --python .venv -e ".[dev]"
+
+      - name: Migrate (from zero)
+        run: .venv/bin/alembic upgrade head
+
+      - name: Verify (format, lint, types, boundaries, tests)
+        run: ./scripts/verify.sh

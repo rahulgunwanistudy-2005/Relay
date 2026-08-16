@@ -1,0 +1,79 @@
+# Canonical development environment.
+#   docker compose up -d postgres        # just the database
+#   docker compose up --build            # full stack (api, worker, web, mail)
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: relay
+      POSTGRES_PASSWORD: relay
+      POSTGRES_DB: relay_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - relay_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U relay -d relay_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Dev email sink for Phase 8 SMTP delivery. UI at http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  migrate:
+    build: .
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      RELAY_DATABASE_URL: postgresql://relay:relay@postgres:5432/relay_dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build: .
+    command: ["uvicorn", "relay.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      RELAY_ENVIRONMENT: development
+      RELAY_DATABASE_URL: postgresql://relay:relay@postgres:5432/relay_dev
+      RELAY_SECRET_KEY: dev-insecure-secret-change-me
+      # Optional: set RELAY_GROQ_API_KEY in your shell to enable real AI extraction.
+      RELAY_AI_PROVIDER: groq
+      RELAY_GROQ_API_KEY: ${RELAY_GROQ_API_KEY:-}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  worker:
+    build: .
+    command: ["python", "-m", "relay.worker.main"]
+    environment:
+      RELAY_ENVIRONMENT: development
+      RELAY_DATABASE_URL: postgresql://relay:relay@postgres:5432/relay_dev
+      RELAY_SECRET_KEY: dev-insecure-secret-change-me
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # Minimal web placeholder. Phase 13 replaces this with the real client.
+  web:
+    image: python:3.11-slim
+    working_dir: /web
+    command: ["python", "-m", "http.server", "3000"]
+    volumes:
+      - ./web:/web:ro
+    ports:
+      - "3000:3000"
+
+volumes:
+  relay_pgdata:
