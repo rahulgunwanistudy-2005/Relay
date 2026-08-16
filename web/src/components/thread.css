@@ -1,0 +1,185 @@
+.thread {
+  --spine: var(--thread);
+  --dot: var(--thread);
+}
+.thread--quiet {
+  --spine: var(--hairline-strong);
+  --dot: var(--hairline-strong);
+}
+.thread--settled {
+  --spine: var(--success);
+  --dot: var(--success);
+}
+.thread--pending {
+  --spine: var(--thread-soft);
+  --dot: var(--thread-soft);
+}
+
+.thread__anchor {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding-left: 4px;
+  margin-bottom: var(--s-2);
+}
+.thread__anchor-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--dot) 18%, transparent);
+  transform: translateY(1px);
+}
+.thread__anchor-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.thread__anchor-caption {
+  font-size: 11px;
+}
+
+.thread__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tnode {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--s-3);
+  align-items: stretch;
+}
+
+.tnode__rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+/* The connector is the thread itself — a continuous line through every node. */
+.tnode__connector {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--spine);
+  opacity: 0.85;
+}
+.tnode:first-child .tnode__connector {
+  top: 10px;
+}
+.tnode:last-child .tnode__connector {
+  bottom: calc(100% - 18px);
+}
+.tnode__dot {
+  position: relative;
+  margin-top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--paper-1);
+  border: 2px solid var(--dot);
+  z-index: 1;
+}
+.tnode--done .tnode__dot {
+  background: var(--dot);
+}
+.tnode--assumption .tnode__dot {
+  border-style: dashed;
+}
+
+.tnode__body {
+  padding-bottom: var(--s-6);
+  min-width: 0;
+}
+.tnode--compact .tnode__body,
+.thread--compact .tnode__body {
+  padding-bottom: var(--s-3);
+}
+
+.tnode__head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+.tnode__kind {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-1);
+}
+.tnode__desc {
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  margin-top: 3px;
+  color: var(--ink-0);
+}
+.thread--compact .tnode__desc,
+.tnode--compact .tnode__desc {
+  font-size: 16px;
+}
+.tnode__desc--done {
+  color: var(--ink-2);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--ink-2) 45%, transparent);
+}
+.tnode__gloss {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  margin-top: 2px;
+}
+
+.tnode__assume {
+  font-size: 11px;
+  color: var(--warning);
+  border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+  border-radius: 999px;
+  padding: 1px 8px;
+  letter-spacing: 0.02em;
+}
+.tnode__done {
+  font-size: 11px;
+  color: var(--success);
+  letter-spacing: 0.04em;
+}
+
+.tnode__toggle {
+  margin-top: var(--s-3);
+  background: transparent;
+  border: none;
+  padding: 2px 0;
+  font-size: 13px;
+  color: var(--ink-1);
+  border-bottom: 1px solid var(--hairline-strong);
+  transition: color var(--t-tap) var(--ease), border-color var(--t-tap) var(--ease);
+}
+.tnode__toggle:hover {
+  color: var(--thread-deep);
+  border-color: var(--thread);
+}
+
+/* Provenance pip — meaning in text + glyph, never color alone. */
+.pip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--ink-2);
+  letter-spacing: 0.02em;
+}
+.pip__glyph {
+  font-size: 10px;
+  line-height: 1;
+}
+.pip--user_explicit {
+  color: var(--ink-1);
+}
+.pip--ai_inferred {
+  color: var(--focus);
+}
