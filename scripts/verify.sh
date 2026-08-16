@@ -14,10 +14,11 @@ run "mypy"                 "${BIN:+$BIN/}mypy"
 run "import-linter"        "${BIN:+$BIN/}lint-imports"
 run "pytest"               "${BIN:+$BIN/}pytest"
 
-# Frontend is a buildless static client; assert it exists and references the API.
+# Frontend is a Vite + React client; assert it exists and is wired to the API.
+# Its own type/lint/build gates run in the separate `web` CI job.
 echo "── frontend presence ─────────────────────────────────"
-test -s web/index.html && grep -q "/v1/" web/index.html \
-  && echo "web/index.html present and wired to /v1 API" \
+test -s web/package.json && test -s web/src/lib/api.ts && grep -q "/v1/" web/src/lib/api.ts \
+  && echo "web client present and wired to /v1 API" \
   || { echo "frontend check failed"; exit 1; }
 
 echo
