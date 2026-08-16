@@ -1,0 +1,389 @@
+.judge {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vw, 40px);
+}
+.judge__scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--paper-0) 78%, transparent);
+  backdrop-filter: blur(10px) saturate(1.05);
+}
+.judge__frame {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  height: min(88vh, 680px);
+  display: flex;
+  flex-direction: column;
+  background: var(--paper-1);
+  border: var(--edge);
+  border-radius: var(--r-contract);
+  box-shadow: var(--lift);
+  overflow: hidden;
+}
+
+.judge__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  border-bottom: var(--edge);
+}
+.judge__chapter {
+  color: var(--ink-1);
+}
+.judge__exit {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.judge__exit:hover {
+  color: var(--ink-0);
+}
+
+.judge__stagewrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 4vw, 48px);
+}
+
+.jstage {
+  width: 100%;
+  max-width: 620px;
+}
+.jscene--center {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+/* Burden */
+.jburden {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.jburden__name {
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+.jburden__thread {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+.jburden__anchor {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--thread);
+}
+.jburden__tick {
+  width: 2px;
+  height: 22px;
+  background: var(--thread-soft);
+  border-radius: 2px;
+}
+
+/* Sentence */
+.jquote-mark {
+  font-family: var(--font-display);
+  font-size: 64px;
+  line-height: 0.4;
+  color: var(--thread-soft);
+}
+.jsentence {
+  font-size: clamp(26px, 4.4vw, 40px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  max-width: 18ch;
+}
+.jsentence__sub {
+  margin-top: 6px;
+}
+
+/* X-Ray */
+.jscene--xray {
+  width: 100%;
+}
+.jscene__eyebrow {
+  display: block;
+  margin-bottom: var(--s-4);
+  color: var(--ink-2);
+  padding-bottom: 10px;
+  border-bottom: var(--edge);
+}
+
+/* Owners */
+.jscene--owners {
+  width: 100%;
+}
+.jowners {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  align-items: center;
+  gap: var(--s-4);
+  margin-bottom: var(--s-6);
+}
+.jowner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  transition: opacity var(--t-panel) var(--ease);
+}
+.jowner--quiet {
+  opacity: 0.38;
+}
+.jowner__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--paper-2);
+  border: 2px solid var(--hairline-strong);
+  transition: background var(--t-panel) var(--ease), border-color var(--t-panel) var(--ease), box-shadow var(--t-panel) var(--ease);
+}
+.jowner--lit .jowner__dot {
+  background: var(--thread);
+  border-color: var(--thread);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--thread) 16%, transparent);
+}
+.jowner__dot--arrived {
+  animation: arrive 0.5s var(--ease);
+}
+.jowner__name {
+  font-size: 22px;
+}
+.jowner__caption {
+  font-size: 10px;
+}
+.jowners__track {
+  position: relative;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+.jowners__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--hairline-strong) 0 6px, transparent 6px 12px);
+}
+.jowners__line.is-crossed {
+  background: var(--thread);
+}
+.jowners__bead {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--thread);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--thread) 18%, transparent);
+}
+
+.jcontract {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--s-6) 0 0;
+  border-top: var(--edge);
+}
+.jcontract__resp {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+.jcontract__term {
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
+.jboom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+}
+.jboom__side {
+  padding: var(--s-4);
+  border-radius: var(--r-surface);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.jboom__side .label {
+  display: block;
+  margin-bottom: 6px;
+}
+.jboom__side--quiet {
+  border: var(--edge);
+  color: var(--ink-2);
+  opacity: 0.7;
+}
+.jboom__side--active {
+  border: 1px solid color-mix(in srgb, var(--thread) 35%, transparent);
+  background: color-mix(in srgb, var(--thread) 6%, transparent);
+  color: var(--ink-0);
+}
+.jboom__num {
+  font-size: 18px;
+  color: var(--thread-deep);
+}
+
+.jproof {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.jproof__line {
+  font-size: 16px;
+  color: var(--ink-0);
+}
+.jproof__num {
+  color: var(--thread-deep);
+  font-size: 17px;
+}
+.jproof__ver {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.jrelief {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.4;
+  color: var(--ink-1);
+  max-width: 40ch;
+  margin: 0 auto;
+}
+
+/* Controls */
+.judge__controls {
+  border-top: var(--edge);
+  padding: 16px 22px 20px;
+  background: var(--paper-1);
+}
+.judge__progress {
+  position: relative;
+  height: 3px;
+  background: var(--paper-2);
+  border-radius: 2px;
+  margin-bottom: 14px;
+}
+.judge__progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--thread);
+  border-radius: 2px;
+}
+.judge__ticks {
+  position: absolute;
+  inset: -8px 0;
+  display: flex;
+  justify-content: space-between;
+}
+.judge__tick {
+  width: 16px;
+  height: 16px;
+  background: none;
+  border: none;
+  position: relative;
+}
+.judge__tick::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--hairline-strong);
+}
+.judge__tick.is-on::after {
+  background: var(--thread);
+}
+.judge__caption {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  color: var(--ink-0);
+  min-height: 1.5em;
+  margin-bottom: 14px;
+}
+.judge__transport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.judge__transport button {
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  color: var(--ink-1);
+  transition: border-color var(--t-tap) var(--ease), color var(--t-tap) var(--ease);
+}
+.judge__transport button:hover {
+  border-color: var(--ink-1);
+  color: var(--ink-0);
+}
+.judge__play {
+  color: var(--ink-0) !important;
+  border-color: var(--ink-0) !important;
+  min-width: 96px;
+}
+
+.judge__message {
+  text-align: center;
+  max-width: 42ch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+}
+.judge__message-title {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+.judge__message-body {
+  color: var(--ink-1);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+@media (max-width: 620px) {
+  .judge__frame {
+    height: 92vh;
+  }
+  .jboom {
+    grid-template-columns: 1fr;
+  }
+  .judge__transport button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
