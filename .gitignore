@@ -26,6 +26,8 @@ htmlcov/
 node_modules/
 web/dist/
 web/.next/
+web/*.tsbuildinfo
+web/.tsbuild/
 
 # OS
 .DS_Store
