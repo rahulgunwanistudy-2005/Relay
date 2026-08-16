@@ -146,6 +146,19 @@ class HandoffResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class IncomingHandoff(BaseModel):
+    """A pending contract proposed to the caller — the honest recipient inbox."""
+
+    contract_id: uuid.UUID
+    responsibility_id: uuid.UUID
+    responsibility_title: str
+    status: str
+    proposer_display_name: str
+    proposer_membership_id: uuid.UUID
+    proposed_owner_membership_id: uuid.UUID
+    created_at: dt.datetime
+
+
 class AcceptRequest(BaseModel):
     idempotency_key: str = Field(min_length=1, max_length=200)
 

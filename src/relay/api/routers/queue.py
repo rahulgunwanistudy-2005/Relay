@@ -7,13 +7,19 @@ import uuid
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 
 from relay.api.deps import get_current_user, get_db
-from relay.api.schemas.responsibility import GhostQueueItem, NotificationOut
+from relay.api.schemas.responsibility import GhostQueueItem, IncomingHandoff, NotificationOut
 from relay.core.application.errors import NotFound
-from relay.core.enums import ReminderState
-from relay.core.models import Membership, Reminder, User
+from relay.core.enums import ContractStatus, ReminderState
+from relay.core.models import (
+    Membership,
+    OwnershipContract,
+    Reminder,
+    Responsibility,
+    User,
+)
 from relay.notifications.models import InAppNotification
 
 router = APIRouter(prefix="/v1", tags=["queue"])
@@ -57,6 +63,47 @@ def ghost_queue(
             scheduled_for=r.scheduled_for,
         )
         for r in rows
+    ]
+
+
+@router.get("/me/handoffs", response_model=list[IncomingHandoff])
+def incoming_handoffs(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[IncomingHandoff]:
+    """Pending ownership contracts proposed to the caller.
+
+    Read-only. Lets a recipient discover a handoff waiting for them instead of
+    relying on an out-of-band contract link. Ownership is unchanged until the
+    recipient explicitly accepts.
+    """
+    membership_ids = _my_membership_ids(db, user)
+    if not membership_ids:
+        return []
+    proposer = aliased(Membership)
+    rows = db.execute(
+        select(OwnershipContract, Responsibility.title, User.display_name)
+        .join(Responsibility, Responsibility.id == OwnershipContract.responsibility_id)
+        .join(proposer, proposer.id == OwnershipContract.proposer_membership_id)
+        .join(User, User.id == proposer.user_id)
+        .where(
+            OwnershipContract.proposed_owner_membership_id.in_(membership_ids),
+            OwnershipContract.status == ContractStatus.pending,
+        )
+        .order_by(OwnershipContract.proposed_at.desc())
+    ).all()
+    return [
+        IncomingHandoff(
+            contract_id=c.id,
+            responsibility_id=c.responsibility_id,
+            responsibility_title=title,
+            status=c.status.value,
+            proposer_display_name=proposer_name,
+            proposer_membership_id=c.proposer_membership_id,
+            proposed_owner_membership_id=c.proposed_owner_membership_id,
+            created_at=c.proposed_at,
+        )
+        for c, title, proposer_name in rows
     ]
 
 

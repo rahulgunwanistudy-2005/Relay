@@ -27,6 +27,9 @@ class MemberResponse(BaseModel):
     household_id: uuid.UUID
     role: MembershipRole
     is_active: bool
+    # Human identity so the client never has to render a raw UUID for a person.
+    display_name: str
+    email: str
 
     model_config = {"from_attributes": True}
 

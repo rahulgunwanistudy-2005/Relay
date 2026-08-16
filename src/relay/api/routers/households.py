@@ -34,6 +34,14 @@ def create_household(
     return household
 
 
+@router.get("/households", response_model=list[HouseholdResponse])
+def list_my_households(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[Household]:
+    return households.list_households_for_user(db, user_id=user.id)
+
+
 @router.get("/households/{household_id}", response_model=HouseholdResponse)
 def get_household(
     household_id: uuid.UUID,
@@ -52,8 +60,22 @@ def list_members(
     household_id: uuid.UUID,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> list[Membership]:
-    return households.list_members(db, user_id=user.id, household_id=household_id)
+) -> list[MemberResponse]:
+    members = households.list_members(db, user_id=user.id, household_id=household_id)
+    # Resolve human identity alongside the membership so the UI shows names,
+    # not UUIDs. Co-members' names/emails are already visible within a household.
+    return [
+        MemberResponse(
+            id=m.id,
+            user_id=m.user_id,
+            household_id=m.household_id,
+            role=m.role,
+            is_active=m.is_active,
+            display_name=m.user.display_name,
+            email=m.user.email,
+        )
+        for m in members
+    ]
 
 
 @router.post(

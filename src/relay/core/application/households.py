@@ -30,6 +30,23 @@ def create_household(
     return household, membership
 
 
+def list_households_for_user(session: Session, *, user_id: uuid.UUID) -> list[Household]:
+    """Households the user is an active member of.
+
+    Read-only navigation aid so a returning client does not depend on
+    client-side storage to rediscover its own tenancy. Authorization is still
+    enforced per resource by ``require_membership`` on every other route.
+    """
+    return list(
+        session.execute(
+            select(Household)
+            .join(Membership, Membership.household_id == Household.id)
+            .where(Membership.user_id == user_id, Membership.is_active.is_(True))
+            .order_by(Household.created_at)
+        ).scalars()
+    )
+
+
 def require_membership(
     session: Session, *, user_id: uuid.UUID, household_id: uuid.UUID
 ) -> Membership:
