@@ -1,0 +1,62 @@
+/* Thread & Paper — Relay's design tokens.
+   Small on purpose. Typography and spacing do the work; containers are rare. */
+
+:root {
+  /* Paper & ink */
+  --paper-0: #f4f0e7;
+  --paper-1: #fbf9f4;
+  --paper-2: #ece6db;
+  --paper-sunk: #efe9dd;
+  --ink-0: #191814;
+  --ink-1: #55514a;
+  --ink-2: #817b71;
+  --hairline: #d9d2c6;
+  --hairline-strong: #cabfae;
+
+  /* The thread is not brand paint. It appears where responsibility is
+     active, changing, or being handed over. */
+  --thread: #d95f4b;
+  --thread-deep: #b8412f;
+  --thread-soft: #e7a392;
+  --thread-ghost: #f0d3c9;
+
+  --success: #526b55;
+  --warning: #a66d2c;
+  --danger: #a3443c;
+  --focus: #315c8c;
+
+  /* Type families — bundled offline via @fontsource. */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-ui: "Inter Variable", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Spacing rhythm (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-24: 96px;
+
+  --r-control: 8px;
+  --r-surface: 10px;
+  --r-contract: 16px;
+
+  --edge: 1px solid var(--hairline);
+  --edge-strong: 1px solid var(--hairline-strong);
+
+  /* One soft shadow, reserved for floating overlays only. */
+  --lift: 0 18px 50px -24px rgba(25, 24, 20, 0.45), 0 2px 8px -4px rgba(25, 24, 20, 0.18);
+
+  --measure: 68ch;
+  --rail-max: 1100px;
+
+  /* Motion — one ease, one spring language. */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --t-tap: 120ms;
+  --t-state: 220ms;
+  --t-panel: 300ms;
+}
