@@ -24,5 +24,7 @@ USER relay
 
 EXPOSE 8000
 
-# Default: API. Override `command` for the worker.
-CMD ["uvicorn", "relay.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Default: API. Applies migrations, then binds the platform-provided $PORT
+# (Render/Fly set it; defaults to 8000 locally). Exec-form sh -c keeps quoting
+# correct so the start command never mis-splits. Override `command` for the worker.
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn relay.api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
