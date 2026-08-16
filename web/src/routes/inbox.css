@@ -1,0 +1,95 @@
+.inbox {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.inbox__head {
+  margin-bottom: var(--s-8);
+}
+.inbox__title {
+  font-size: clamp(26px, 3.6vw, 36px);
+  letter-spacing: -0.025em;
+  margin: 6px 0 12px;
+}
+.inbox__lead {
+  color: var(--ink-1);
+  font-size: 16px;
+  line-height: 1.55;
+  max-width: 54ch;
+}
+.inbox__calm {
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+.inbox__empty {
+  padding: var(--s-16) 0;
+  text-align: center;
+}
+.inbox__empty-line {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.inbox__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.inbox__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: 18px 0;
+  border-top: var(--edge);
+  transition: padding-left var(--t-state) var(--ease);
+}
+.inbox__list li:last-child .inbox__row {
+  border-bottom: var(--edge);
+}
+.inbox__row:hover {
+  padding-left: 8px;
+}
+.inbox__thread {
+  width: 4px;
+  align-self: stretch;
+  min-height: 40px;
+  border-radius: 2px;
+  background: linear-gradient(var(--thread-soft), var(--thread));
+  flex: none;
+}
+.inbox__body {
+  flex: 1;
+  min-width: 0;
+}
+.inbox__from {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.inbox__resp {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+.inbox__meta {
+  text-align: right;
+  white-space: nowrap;
+}
+.inbox__when {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.inbox__cta {
+  display: block;
+  font-size: 13.5px;
+  color: var(--thread-deep);
+  margin-top: 4px;
+}
+
+@media (max-width: 620px) {
+  .inbox__cta {
+    display: none;
+  }
+}
