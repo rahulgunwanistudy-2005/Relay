@@ -22,15 +22,19 @@ MIGRATION_DB = "relay_migration_test"
 def fresh_db_url() -> str:
     base = make_url(get_settings().sync_database_url)
     admin = base.set(database="postgres")
-    admin_engine = create_engine(str(admin), isolation_level="AUTOCOMMIT")
+    # ``str(url)`` masks the password as ``***``; render it in full so the engine
+    # authenticates with the real credentials (CI enforces a password; local
+    # trust-auth hid this bug).
+    admin_url = admin.render_as_string(hide_password=False)
+    admin_engine = create_engine(admin_url, isolation_level="AUTOCOMMIT")
     with admin_engine.connect() as conn:
         conn.execute(text(f'DROP DATABASE IF EXISTS "{MIGRATION_DB}" WITH (FORCE)'))
         conn.execute(text(f'CREATE DATABASE "{MIGRATION_DB}"'))
     admin_engine.dispose()
 
-    yield str(base.set(database=MIGRATION_DB))
+    yield base.set(database=MIGRATION_DB).render_as_string(hide_password=False)
 
-    admin_engine = create_engine(str(admin), isolation_level="AUTOCOMMIT")
+    admin_engine = create_engine(admin_url, isolation_level="AUTOCOMMIT")
     with admin_engine.connect() as conn:
         conn.execute(text(f'DROP DATABASE IF EXISTS "{MIGRATION_DB}" WITH (FORCE)'))
     admin_engine.dispose()
