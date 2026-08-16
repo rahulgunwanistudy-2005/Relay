@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/v1/:path*",
+      "destination": "https://relay-api-web.onrender.com/v1/:path*"
+    },
+    {
+      "source": "/health/:path*",
+      "destination": "https://relay-api-web.onrender.com/health/:path*"
+    },
+    { "source": "/:path*", "destination": "/index.html" }
+  ]
+}
