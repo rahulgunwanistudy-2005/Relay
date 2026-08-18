@@ -31,3 +31,7 @@ web/.tsbuild/
 
 # OS
 .DS_Store
+
+# Vercel
+.vercel/
+web/.vercel/

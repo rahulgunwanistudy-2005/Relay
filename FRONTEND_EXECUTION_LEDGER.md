@@ -4,6 +4,31 @@ Running record of the frontend build. The backend is the source of truth; this
 frontend makes the real backend legible. No functionality is claimed that was
 not run against the live API.
 
+## Live deployment (all free tier)
+
+- **Frontend (Vercel):** https://web-eight-zeta-30.vercel.app
+- **API (Render, Python runtime):** https://relay-api-web.onrender.com — `srv-da12uis9v7es73afeu50`
+- **Database (Render Postgres, free):** `relay-db` `dpg-da12cpnlk1mc7392dkpg-a` (singapore, expires ~2026-09-15)
+
+Wiring: the Vercel app calls same-origin relative `/v1` + `/health`; `web/vercel.json`
+rewrites those to the Render API (no CORS). The API runs migrations on start and binds
+`$PORT`; env: `RELAY_ENVIRONMENT=production`, `RELAY_DATABASE_URL` (internal), a strong
+`RELAY_SECRET_KEY`, `RELAY_RATE_LIMIT_PER_MINUTE=1000`, `PYTHON_VERSION=3.11.9`.
+
+Verified in production: `./scripts/e2e_frontend_flow.sh` passed against **both** the Render
+API URL and the public Vercel URL (register → household → responsibility → handoff →
+accept → **No Boomerang** → proof), plus a live browser sign-in on the Vercel site.
+
+Notes / cleanup:
+- The frontend was shipped with `vercel deploy --prod` (CLI). Redeploy with
+  `cd web && vercel deploy --prod`, or connect the GitHub repo (root dir `web`) in the
+  Vercel dashboard for push-to-deploy. The Render API already auto-deploys on push to main.
+- An earlier Docker-based Render service `relay-api` (`srv-da12lfu7bikc7387u0a0`,
+  `relay-api-qiss.onrender.com`) failed (start-command override mis-split → exit 127) and
+  is superseded by `relay-api-web`; it can be deleted from the Render dashboard.
+- `render.yaml` provides a credential-free one-click Blueprint alternative (`fromDatabase`
+  + `generateValue`).
+
 ## Environment (verified Phase 0)
 
 - Postgres 16 running locally; `relay_dev` migrated to head `42b62f189167`.
